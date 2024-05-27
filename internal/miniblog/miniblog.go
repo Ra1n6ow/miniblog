@@ -67,5 +67,6 @@ func run() error {
 	log.Infow(string(settings))
 	// 打印 db -> username 配置项的值
 	log.Infow(viper.GetString("db.username"))
+	log.Debugw("Hello world")
 	return nil
 }

@@ -6,7 +6,6 @@
 package log
 
 import (
-	"fmt"
 	"sync"
 	"time"
 
@@ -42,7 +41,6 @@ var (
 
 // Init 使用指定的选项初始化 Logger.
 func Init(opts *Options) {
-	fmt.Println("------------------Init-------------")
 	mu.Lock()
 	defer mu.Unlock()
 
@@ -57,15 +55,8 @@ func NewLogger(opts *Options) *zapLogger {
 
 	// 将文本格式的日志级别，例如 info 转换为 zapcore.Level 类型以供后面使用
 	var zapLevel zapcore.Level
-	var err error
-	//if err := zapLevel.UnmarshalText([]byte(opts.Level)); err != nil {
-	//	// 如果指定了非法的日志级别，则默认使用 info 级别
-	//	zapLevel = zapcore.InfoLevel
-	//}
-	zapLevel, err = zapcore.ParseLevel(opts.Level)
-	fmt.Println("------------------", zapLevel, "-------------")
-	if err != nil {
-		//	// 如果指定了非法的日志级别，则默认使用 info 级别
+	if err := zapLevel.UnmarshalText([]byte(opts.Level)); err != nil {
+		// 如果指定了非法的日志级别，则默认使用 info 级别
 		zapLevel = zapcore.InfoLevel
 	}
 
@@ -111,7 +102,6 @@ func NewLogger(opts *Options) *zapLogger {
 
 	// 把标准库的 log.Logger 的 info 级别的输出重定向到 zap.Logger
 	zap.RedirectStdLog(z)
-	fmt.Println("------------------", zapLevel, "-------------")
 
 	return logger
 }
