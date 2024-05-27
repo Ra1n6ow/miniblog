@@ -1,7 +1,12 @@
+// Copyright (c) 2024 ra1n6ow <jeffduuu@gmail.com>. All rights reserved.
+// Use of this source code is governed by a MIT style
+// license that can be found in the LICENSE file. The original repo for
+// this file is https://github.com/ra1n6ow/miniblog.
+
 package miniblog
 
 import (
-	"fmt"
+	"github.com/ra1n6ow/miniblog/internal/pkg/log"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"os"
@@ -53,9 +58,21 @@ func initConfig() {
 
 	// 读取配置文件。如果指定了配置文件名，则使用指定的配置文件，否则在注册的搜索路径中搜索
 	if err := viper.ReadInConfig(); err != nil {
-		fmt.Fprintln(os.Stderr, err)
+		log.Errorw("Failed to read viper configuration file", "err", err)
 	}
 
 	// 打印 viper 当前使用的配置文件，方便 Debug.
-	fmt.Fprintln(os.Stdout, "Using config file:", viper.ConfigFileUsed())
+	log.Debugw("Using config file", "file", viper.ConfigFileUsed())
+}
+
+// logOptions 从 viper 中读取日志配置，构建 `*log.Options` 并返回.
+// 注意：`viper.Get<Type>()` 中 key 的名字需要使用 `.` 分割，以跟 YAML 中保持相同的缩进.
+func logOptions() *log.Options {
+	return &log.Options{
+		DisableCaller:     viper.GetBool("log.disable-caller"),
+		DisableStacktrace: viper.GetBool("log.disable-stacktrace"),
+		Level:             viper.GetString("log.level"),
+		Format:            viper.GetString("log.format"),
+		OutputPaths:       viper.GetStringSlice("log.output-paths"),
+	}
 }
