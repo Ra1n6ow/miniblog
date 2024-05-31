@@ -9,17 +9,18 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/ra1n6ow/miniblog/internal/pkg/log"
 	mw "github.com/ra1n6ow/miniblog/internal/pkg/middleware"
 	"github.com/ra1n6ow/miniblog/pkg/version/verflag"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
-	"time"
 )
 
 var cfgFile string
@@ -84,6 +85,11 @@ func run() error {
 	//log.Debugw("Hello world")
 	//return nil
 
+	// 初始化 store 层
+	if err := initStore(); err != nil {
+		return err
+	}
+
 	// 设置 Gin 模式
 	gin.SetMode(viper.GetString("runmode"))
 
@@ -95,16 +101,9 @@ func run() error {
 
 	g.Use(mws...)
 
-	// 注册 404 Handler.
-	g.NoRoute(func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"code": 10003, "message": "Page not found."})
-	})
-
-	// 注册 /healthz handler.
-	g.GET("/healthz", func(c *gin.Context) {
-		log.C(c).Infow("Healthz function called")
-		c.JSON(http.StatusOK, gin.H{"status": "ok"})
-	})
+	if err := installRouters(g); err != nil {
+		return err
+	}
 
 	// 创建 HTTP Server 实例
 	httpsrv := &http.Server{Addr: viper.GetString("addr"), Handler: g}
