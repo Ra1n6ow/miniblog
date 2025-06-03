@@ -15,3 +15,10 @@ grpcurl -plaintext localhost:6666 list
 // 注册反射服务
 eflection.Register(grpcSrv)
 ```
+
+### grpc-gateway
+
+```shell
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@v2.24.0
+go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@v2.24.0
+```

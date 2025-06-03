@@ -4,12 +4,14 @@ go 1.24.3
 
 require (
 	github.com/gosuri/uitable v0.0.4
-	github.com/ra1n6ow/gpkg v0.0.2
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
+	github.com/ra1n6ow/gpkg v0.0.3
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
 	go.uber.org/automaxprocs v1.6.0
 	go.uber.org/zap v1.27.0
+	google.golang.org/genproto/googleapis/api v0.0.0-20250303144028-a0af3efb3deb
 	k8s.io/apimachinery v0.33.1
 )
 

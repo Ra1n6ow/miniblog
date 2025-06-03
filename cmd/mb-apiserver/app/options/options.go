@@ -30,6 +30,7 @@ type ServerOptions struct {
 	// Expiration 定义 JWT Token 的过期时间.
 	Expiration time.Duration `json:"expiration" mapstructure:"expiration"`
 
+	HTTPOptions *genericoptions.HTTPOptions `json:"http" mapstructure:"http"`
 	GRPCOptions *genericoptions.GRPCOptions `json:"grpc" mapstructure:"grpc"`
 }
 
@@ -40,8 +41,10 @@ func NewServerOptions() *ServerOptions {
 		JWTKey:      "Rtg8BPKNEf2mB4mgvKONGPZZQSaJWNLijxR42qRgq0iBb5",
 		Expiration:  2 * time.Hour,
 		GRPCOptions: genericoptions.NewGRPCOptions(),
+		HTTPOptions: genericoptions.NewHTTPOptions(),
 	}
-	opts.GRPCOptions.Addr = ":8888"
+	opts.HTTPOptions.Addr = ":8880"
+	opts.GRPCOptions.Addr = ":8881"
 	return opts
 }
 
@@ -54,6 +57,7 @@ func (o *ServerOptions) AddFlags(fs *pflag.FlagSet) {
 	// 参数名称为 `--expiration`，默认值为 o.Expiration
 	fs.DurationVar(&o.Expiration, "expiration", o.Expiration, "The expiration duration of JWT tokens.")
 	o.GRPCOptions.AddFlags(fs)
+	o.HTTPOptions.AddFlags(fs)
 }
 
 // Validate 校验 ServerOptions 中的选项是否合法.
@@ -70,6 +74,8 @@ func (o *ServerOptions) Validate() error {
 		errs = append(errs, errors.New("JWTKey must be at least 6 characters long"))
 	}
 
+	errs = append(errs, o.HTTPOptions.Validate()...)
+
 	// 如果是 gRPC 或 gRPC-Gateway 模式，校验 gRPC 配置
 	if stringsutil.StringIn(o.ServerMode, []string{apiserver.GRPCServerMode, apiserver.GRPCGatewayServerMode}) {
 		errs = append(errs, o.GRPCOptions.Validate()...)
@@ -85,6 +91,7 @@ func (o *ServerOptions) Config() (*apiserver.Config, error) {
 		ServerMode:  o.ServerMode,
 		JWTKey:      o.JWTKey,
 		Expiration:  o.Expiration,
+		HTTPOptions: o.HTTPOptions,
 		GRPCOptions: o.GRPCOptions,
 	}, nil
 }
