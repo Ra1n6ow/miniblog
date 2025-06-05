@@ -1,3 +1,8 @@
+// Copyright 2024 Ra1n6ow <jeffduuu@gmail.com>. All rights reserved.
+// Use of this source code is governed by a MIT style
+// license that can be found in the LICENSE file. The original repo for
+// this file is https://github.com/Ra1n6ow/miniblog.
+
 package apiserver
 
 import (
@@ -7,6 +12,7 @@ import (
 	"google.golang.org/grpc"
 
 	handler "github.com/ra1n6ow/miniblog/internal/apiserver/handler/grpc"
+	mw "github.com/ra1n6ow/miniblog/internal/pkg/middleware/grpc"
 	"github.com/ra1n6ow/miniblog/internal/pkg/server"
 	apiv1 "github.com/ra1n6ow/miniblog/pkg/api/apiserver/v1"
 )
@@ -29,9 +35,19 @@ var _ server.Server = (*grpcServer)(nil)
 //  2. 处理默认值或回退逻辑
 //  3. 表达灵活选项
 func (c *ServerConfig) NewGRPCServerOr() (server.Server, error) {
+	// 配置 gRPC 服务器选项，包括拦截器链
+	serverOptions := []grpc.ServerOption{
+		// 注意拦截器顺序！
+		grpc.ChainUnaryInterceptor(
+			// 请求 ID 拦截器
+			mw.RequestIDInterceptor(),
+		),
+	}
+
 	// 创建 gRPC 服务器
 	grpcsrv, err := server.NewGRPCServer(
 		c.cfg.GRPCOptions,
+		serverOptions,
 		func(s grpc.ServiceRegistrar) {
 			apiv1.RegisterMiniBlogServer(s, handler.NewHandler())
 		},

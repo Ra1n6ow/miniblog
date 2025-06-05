@@ -3,18 +3,12 @@
 // license that can be found in the LICENSE file. The original repo for
 // this file is https://github.com/Ra1n6ow/miniblog.
 
-package grpc
+package http
 
-import (
-	apiv1 "github.com/ra1n6ow/miniblog/pkg/api/apiserver/v1"
-)
+// Handler 处理博客模块的请求.
+type Handler struct{}
 
-// Handler 负责处理博客模块的请求.
-type Handler struct {
-	apiv1.UnimplementedMiniBlogServer
-}
-
-// NewHandler 创建一个新的 Handler 实例.
+// NewHandler 创建新的 Handler 实例.
 func NewHandler() *Handler {
 	return &Handler{}
 }
