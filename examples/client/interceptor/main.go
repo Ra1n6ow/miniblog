@@ -1,3 +1,8 @@
+// Copyright 2024 Ra1n6ow <jeffduuu@gmail.com>. All rights reserved.
+// Use of this source code is governed by a MIT style
+// license that can be found in the LICENSE file. The original repo for
+// this file is https://github.com/Ra1n6ow/miniblog.
+
 package main
 
 import (
@@ -17,8 +22,8 @@ import (
 
 var (
 	// 定义命令行参数
-	addr  = flag.String("addr", "localhost:6666", "The grpc server address to connect to.") // gRPC 服务的地址
-	limit = flag.Int64("limit", 10, "Limit to list users.")                                 // 限制列出用户的数量
+	addr = flag.String("addr", "localhost:6666", "The grpc server address to connect to.") // gRPC 服务的地址
+	// limit = flag.Int64("limit", 10, "Limit to list users.")                                 // 限制列出用户的数量
 )
 
 func main() {
