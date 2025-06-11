@@ -8,7 +8,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/ra1n6ow/gpkg/pkg/errorsx"
+	"github.com/ra1n6ow/gpkg/errorsx"
 	"github.com/ra1n6ow/miniblog/internal/pkg/errno"
 )
 

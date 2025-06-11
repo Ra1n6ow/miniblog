@@ -1,7 +1,7 @@
 package conversion
 
 import (
-	"github.com/ra1n6ow/gpkg/pkg/core"
+	"github.com/ra1n6ow/gpkg/core"
 
 	"github.com/ra1n6ow/miniblog/internal/apiserver/model"
 	apiv1 "github.com/ra1n6ow/miniblog/pkg/api/apiserver/v1"

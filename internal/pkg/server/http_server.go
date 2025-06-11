@@ -10,7 +10,7 @@ import (
 	"errors"
 	"net/http"
 
-	genericoptions "github.com/ra1n6ow/gpkg/pkg/options"
+	genericoptions "github.com/ra1n6ow/gpkg/options"
 
 	"github.com/ra1n6ow/miniblog/internal/pkg/log"
 )

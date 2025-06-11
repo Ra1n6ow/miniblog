@@ -5,7 +5,7 @@ import (
 	"log"
 	"path/filepath"
 
-	"github.com/ra1n6ow/gpkg/pkg/db"
+	"github.com/ra1n6ow/gpkg/db"
 	"github.com/spf13/pflag"
 	"gorm.io/gen"
 	"gorm.io/gen/field"

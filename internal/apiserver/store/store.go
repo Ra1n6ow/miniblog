@@ -6,7 +6,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/ra1n6ow/gpkg/pkg/store/where"
+	"github.com/ra1n6ow/gpkg/store/where"
 	"gorm.io/gorm"
 )
 

@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/jinzhu/copier"
-	"github.com/ra1n6ow/gpkg/pkg/store/where"
+	"github.com/ra1n6ow/gpkg/store/where"
 	"golang.org/x/sync/errgroup"
 	"google.golang.org/protobuf/types/known/timestamppb"
 

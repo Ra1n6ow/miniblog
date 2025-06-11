@@ -9,7 +9,7 @@ import (
 	"context"
 
 	"github.com/google/uuid"
-	"github.com/ra1n6ow/gpkg/pkg/errorsx"
+	"github.com/ra1n6ow/gpkg/errorsx"
 	"github.com/ra1n6ow/miniblog/internal/pkg/contextx"
 	"github.com/ra1n6ow/miniblog/internal/pkg/known"
 	"google.golang.org/grpc"

@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/jinzhu/copier"
-	"github.com/ra1n6ow/gpkg/pkg/store/where"
+	"github.com/ra1n6ow/gpkg/store/where"
 	"github.com/ra1n6ow/miniblog/internal/apiserver/model"
 	"github.com/ra1n6ow/miniblog/internal/apiserver/pkg/conversion"
 	"github.com/ra1n6ow/miniblog/internal/apiserver/store"

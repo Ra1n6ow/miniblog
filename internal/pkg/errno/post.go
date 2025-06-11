@@ -8,7 +8,7 @@ package errno
 import (
 	"net/http"
 
-	"github.com/ra1n6ow/gpkg/pkg/errorsx"
+	"github.com/ra1n6ow/gpkg/errorsx"
 )
 
 // ErrPostNotFound 表示未找到指定的博客.

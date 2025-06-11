@@ -1,7 +1,7 @@
 package rid
 
 import (
-	"github.com/ra1n6ow/gpkg/pkg/id"
+	"github.com/ra1n6ow/gpkg/id"
 )
 
 const defaultABC = "abcdefghijklmnopqrstuvwxyz1234567890"

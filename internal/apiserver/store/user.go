@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 
-	"github.com/ra1n6ow/gpkg/pkg/store/where"
+	"github.com/ra1n6ow/gpkg/store/where"
 	"gorm.io/gorm"
 
 	"github.com/ra1n6ow/miniblog/internal/apiserver/model"
