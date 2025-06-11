@@ -9,6 +9,7 @@ require (
 	github.com/gosuri/uitable v0.0.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
 	github.com/jinzhu/copier v0.4.0
+	github.com/onexstack/protoc-gen-defaults v0.0.2
 	github.com/ra1n6ow/gpkg v0.1.1
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
