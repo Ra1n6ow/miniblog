@@ -72,7 +72,6 @@ test:
 	@echo "MAKEFILE_LIST = $(MAKEFILE_LIST)"
 	@echo "PROJ_ROOT_DIR = $(PROJ_ROOT_DIR)"
 
-.PHONY: protoc
 protoc: # 编译 protobuf 文件.
 	@echo "===========> Generate protobuf files"
 	@mkdir -p $(PROJ_ROOT_DIR)/api/openapi

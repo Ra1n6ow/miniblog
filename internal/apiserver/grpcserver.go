@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	genericvalidation "github.com/ra1n6ow/gpkg/validation"
 	"google.golang.org/grpc"
 
 	handler "github.com/ra1n6ow/miniblog/internal/apiserver/handler/grpc"
@@ -45,6 +46,8 @@ func (c *ServerConfig) NewGRPCServerOr() (server.Server, error) {
 			mw.AuthnBypasswInterceptor(),
 			// 请求默认值设置拦截器
 			mw.DefaulterInterceptor(),
+			// 数据校验拦截器
+			mw.ValidatorInterceptor(genericvalidation.NewValidator(c.val)),
 		),
 	}
 

@@ -5,12 +5,13 @@ go 1.24.3
 require (
 	github.com/gin-contrib/pprof v1.5.3
 	github.com/gin-gonic/gin v1.10.1
+	github.com/go-ozzo/ozzo-validation/v4 v4.3.0
 	github.com/google/uuid v1.6.0
 	github.com/gosuri/uitable v0.0.4
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.26.3
 	github.com/jinzhu/copier v0.4.0
 	github.com/onexstack/protoc-gen-defaults v0.0.2
-	github.com/ra1n6ow/gpkg v0.1.1
+	github.com/ra1n6ow/gpkg v0.1.2
 	github.com/spf13/cobra v1.9.1
 	github.com/spf13/pflag v1.0.6
 	github.com/spf13/viper v1.20.1
@@ -22,6 +23,7 @@ require (
 	gorm.io/gen v0.3.27
 	gorm.io/gorm v1.30.0
 	k8s.io/apimachinery v0.33.1
+	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397
 )
 
 require (
@@ -33,6 +35,7 @@ require (
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/gabriel-vasile/mimetype v1.4.9 // indirect
 	github.com/gin-contrib/sse v1.1.0 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.26.0 // indirect
@@ -61,7 +64,7 @@ require (
 	gorm.io/driver/sqlserver v1.6.0 // indirect
 	gorm.io/hints v1.1.2 // indirect
 	gorm.io/plugin/dbresolver v1.6.0 // indirect
-	k8s.io/utils v0.0.0-20250604170112-4c0f3b243397 // indirect
+	k8s.io/klog/v2 v2.130.1 // indirect
 )
 
 require (
