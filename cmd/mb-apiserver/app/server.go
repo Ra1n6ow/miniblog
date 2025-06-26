@@ -64,9 +64,12 @@ The project features include:
 
 // run 是主运行逻辑，负责初始化日志、解析配置、校验选项并启动服务器。
 func run(opts *options.ServerOptions) error {
-	log.Init(logOptions())
 	// 如果 --version 标志被设置，则打印版本信息并退出
 	version.PrintAndExitIfRequested()
+
+	// 初始化日志
+	log.Init(logOptions())
+	defer log.Sync() // 确保日志在退出时被刷新到磁盘
 
 	// 将 viper 中的配置解析到 opts.
 	if err := viper.Unmarshal(opts); err != nil {

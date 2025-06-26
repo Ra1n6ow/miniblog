@@ -44,6 +44,7 @@ type Config struct {
 	ServerMode   string
 	JWTKey       string
 	Expiration   time.Duration
+	TLSOptions   *genericoptions.TLSOptions
 	GRPCOptions  *genericoptions.GRPCOptions
 	HTTPOptions  *genericoptions.HTTPOptions
 	MySQLOptions *genericoptions.MySQLOptions
