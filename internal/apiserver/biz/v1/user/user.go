@@ -3,7 +3,6 @@ package user
 import (
 	"context"
 	"sync"
-	"time"
 
 	"github.com/jinzhu/copier"
 	"github.com/ra1n6ow/gpkg/store/where"
@@ -19,6 +18,7 @@ import (
 	"github.com/ra1n6ow/miniblog/internal/pkg/log"
 	apiv1 "github.com/ra1n6ow/miniblog/pkg/api/apiserver/v1"
 	"github.com/ra1n6ow/miniblog/pkg/auth"
+	"github.com/ra1n6ow/miniblog/pkg/token"
 )
 
 // UserBiz 定义处理用户请求所需的方法.
@@ -43,13 +43,14 @@ type UserExpansion interface {
 // userBiz 是 UserBiz 接口的实现.
 type userBiz struct {
 	store store.IStore
+	authz *auth.Authz
 }
 
 // 确保 userBiz 实现了 UserBiz 接口.
 var _ UserBiz = (*userBiz)(nil)
 
-func New(store store.IStore) *userBiz {
-	return &userBiz{store: store}
+func New(store store.IStore, authz *auth.Authz) *userBiz {
+	return &userBiz{store: store, authz: authz}
 }
 
 // Login 实现 UserBiz 接口中的 Login 方法.
@@ -67,16 +68,26 @@ func (b *userBiz) Login(ctx context.Context, rq *apiv1.LoginRequest) (*apiv1.Log
 		return nil, errno.ErrPasswordInvalid
 	}
 
-	// TODO：实现 Token 签发逻辑
+	// 如果匹配成功，说明登录成功，签发 token 并返回
+	tokenStr, expireAt, err := token.Sign(userM.UserID)
+	if err != nil {
+		log.W(ctx).Errorw("Failed to sign token", "err", err)
+		return nil, errno.ErrSignToken
+	}
 
-	return &apiv1.LoginResponse{Token: "<placeholder>", ExpireAt: timestamppb.New(time.Now().Add(2 * time.Hour))}, nil
+	return &apiv1.LoginResponse{Token: tokenStr, ExpireAt: timestamppb.New(expireAt)}, nil
 }
 
 // RefreshToken 用于刷新用户的身份验证令牌.
 // 当用户的令牌即将过期时，可以调用此方法生成一个新的令牌.
 func (b *userBiz) RefreshToken(ctx context.Context, rq *apiv1.RefreshTokenRequest) (*apiv1.RefreshTokenResponse, error) {
-	// TODO：实现 Token 签发逻辑
-	return &apiv1.RefreshTokenResponse{Token: "<placeholder>", ExpireAt: timestamppb.New(time.Now().Add(2 * time.Hour))}, nil
+	tokenStr, expireAt, err := token.Sign(contextx.UserID(ctx))
+	if err != nil {
+		log.W(ctx).Errorw("Failed to sign refresh token", "err", err)
+		return nil, errno.ErrSignToken
+	}
+
+	return &apiv1.RefreshTokenResponse{Token: tokenStr, ExpireAt: timestamppb.New(expireAt)}, nil
 }
 
 // ChangePassword 实现 UserBiz 接口中的 ChangePassword 方法.
@@ -104,8 +115,14 @@ func (b *userBiz) Create(ctx context.Context, rq *apiv1.CreateUserRequest) (*api
 	var userM model.UserM
 	_ = copier.Copy(&userM, rq)
 
+	userM.Password, _ = auth.Encrypt(rq.Password)
 	if err := b.store.User().Create(ctx, &userM); err != nil {
 		return nil, err
+	}
+
+	if _, err := b.authz.AddGroupingPolicy(userM.UserID, known.RoleUser); err != nil {
+		log.W(ctx).Errorw("Failed to add grouping policy for user", "user", userM.UserID, "role", known.RoleUser)
+		return nil, errno.ErrAddRole.WithMessage("%s", err.Error())
 	}
 
 	return &apiv1.CreateUserResponse{UserID: userM.UserID}, nil
@@ -144,6 +161,11 @@ func (b *userBiz) Delete(ctx context.Context, rq *apiv1.DeleteUserRequest) (*api
 	// 所以这里不用 where.T()，因为 where.T() 会查询 `root` 用户自己
 	if err := b.store.User().Delete(ctx, where.F("userID", rq.GetUserID())); err != nil {
 		return nil, err
+	}
+
+	if _, err := b.authz.RemoveGroupingPolicy(rq.GetUserID(), known.RoleUser); err != nil {
+		log.W(ctx).Errorw("Failed to remove grouping policy for user", "user", rq.GetUserID(), "role", known.RoleUser)
+		return nil, errno.ErrRemoveRole.WithMessage("%s", err.Error())
 	}
 
 	return &apiv1.DeleteUserResponse{}, nil

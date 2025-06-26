@@ -17,11 +17,14 @@ import (
 	"gorm.io/gorm"
 
 	"github.com/ra1n6ow/miniblog/internal/apiserver/biz"
+	"github.com/ra1n6ow/miniblog/internal/apiserver/model"
 	"github.com/ra1n6ow/miniblog/internal/apiserver/pkg/validation"
 	"github.com/ra1n6ow/miniblog/internal/apiserver/store"
 	"github.com/ra1n6ow/miniblog/internal/pkg/contextx"
 	"github.com/ra1n6ow/miniblog/internal/pkg/log"
+	mw "github.com/ra1n6ow/miniblog/internal/pkg/middleware/gin"
 	"github.com/ra1n6ow/miniblog/internal/pkg/server"
+	"github.com/ra1n6ow/miniblog/pkg/auth"
 )
 
 const (
@@ -61,9 +64,11 @@ type UnionServer struct {
 }
 
 type ServerConfig struct {
-	cfg *Config
-	biz biz.IBiz
-	val *validation.Validator
+	cfg       *Config
+	biz       biz.IBiz
+	val       *validation.Validator
+	retriever mw.UserRetriever
+	authz     *auth.Authz
 }
 
 // NewUnionServer 根据配置创建联合服务器.
@@ -136,14 +141,32 @@ func (cfg *Config) NewServerConfig() (*ServerConfig, error) {
 	}
 	store := store.NewStore(db)
 
+	// 初始化权限认证模块
+	authz, err := auth.NewAuthz(store.DB(context.TODO()))
+	if err != nil {
+		return nil, err
+	}
+
 	return &ServerConfig{
-		cfg: cfg,
-		biz: biz.NewBiz(store),
-		val: validation.New(store),
+		cfg:       cfg,
+		biz:       biz.NewBiz(store, authz),
+		val:       validation.New(store),
+		retriever: &UserRetriever{store: store},
+		authz:     authz,
 	}, nil
 }
 
 // NewDB 创建一个 *gorm.DB 实例.
 func (cfg *Config) NewDB() (*gorm.DB, error) {
 	return cfg.MySQLOptions.NewDB()
+}
+
+// UserRetriever 定义一个用户数据获取器. 用来获取用户信息.
+type UserRetriever struct {
+	store store.IStore
+}
+
+// GetUser 根据用户 ID 获取用户信息.
+func (r *UserRetriever) GetUser(ctx context.Context, userID string) (*model.UserM, error) {
+	return r.store.User().Get(ctx, where.F("userID", userID))
 }

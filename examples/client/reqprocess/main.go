@@ -18,8 +18,8 @@ import (
 )
 
 var (
-	addr  = flag.String("addr", "localhost:6666", "The grpc server address to connect to.")
-	limit = flag.Int64("limit", 10, "Limit to list users.")
+	addr = flag.String("addr", "localhost:6666", "The grpc server address to connect to.")
+	// limit = flag.Int64("limit", 10, "Limit to list users.")
 )
 
 func main() {
