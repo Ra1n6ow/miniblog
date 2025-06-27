@@ -3,9 +3,14 @@ package validation
 import (
 	"regexp"
 
+	"github.com/google/wire"
 	"github.com/ra1n6ow/miniblog/internal/apiserver/store"
 	"github.com/ra1n6ow/miniblog/internal/pkg/errno"
 )
+
+// ProviderSet 是一个 Wire 的 Provider 集合，用于声明依赖注入的规则.
+// 包含 New 构造函数，用于生成 Validator 实例.
+var ProviderSet = wire.NewSet(New)
 
 // Validator 是验证逻辑的实现结构体.
 type Validator struct {
